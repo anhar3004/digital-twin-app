@@ -55,6 +55,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { setLoginData } from '@/composables/useAuth';
 
 const router = useRouter();
 const loading = ref(false);
@@ -89,9 +90,7 @@ const handleLogin = async () => {
       throw new Error(result.error || 'Terjadi kesalahan saat login');
     }
 
-    // SIMPAN DATA KE STORAGE
-    localStorage.setItem('auth_token', result.token);
-    localStorage.setItem('user_info', JSON.stringify(result.user));
+    setLoginData(result.token, JSON.stringify(result.user));
 
     console.log('Login Berhasil:', result.user.name);
 
