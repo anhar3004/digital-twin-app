@@ -5,6 +5,6 @@ export const getImageUrl = (path: string | null) => {
   if (path.startsWith('http')) return path;
 
   // Jika hanya nama file (misal: "mixer-6kg.png"), arahkan ke folder public backend
-  const baseUrl = 'http://localhost:3000/public/uploads';
+  const baseUrl = '${import.meta.env.VITE_API_URL}/public/uploads';
   return `${baseUrl}/${path}`;
 };
