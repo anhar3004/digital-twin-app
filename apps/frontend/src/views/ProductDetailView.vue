@@ -232,7 +232,7 @@ const fetchProductDetail = async () => {
     const token = localStorage.getItem('auth_token');
 
     // Gunakan URL yang fleksibel (opsional: gunakan import.meta.env.VITE_API_URL)
-    const response = await fetch(`http://localhost:3000/api/products/${serialNumber}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/products/${serialNumber}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
