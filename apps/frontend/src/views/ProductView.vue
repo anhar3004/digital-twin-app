@@ -208,13 +208,13 @@ const getWarrantyText = (expiryDate: string | Date) => {
 
   return result.trim();
 };
-
+  
 const fetchProducts = async () => {
   loading.value = true;
   try {
     const id = route.params.id;
     const token = localStorage.getItem('auth_token');
-    const response = await fetch(`http://localhost:3000/api/products/`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/products/`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -250,7 +250,7 @@ const toggleServiceRequest = async (productId: string) => {
 
   try {
     const token = localStorage.getItem('auth_token');
-    const response = await fetch(`http://localhost:3000/api/products/${productId}/service`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/products/${productId}/service`, {
       method: 'PATCH',
       headers: { 'Authorization': `Bearer ${token}` }
     });
