@@ -1,0 +1,16 @@
+{
+  "name": "digital-twin",
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:frontend": "bun --filter frontend dev",
+    "dev:backend": "bun --filter backend dev",
+    "dev": "concurrently \"bun dev:frontend\" \"bun dev:backend\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
