@@ -9,6 +9,7 @@ import { staticPlugin } from '@elysiajs/static'
 const connectionString = process.env.DATABASE_URL || "mysql://root:@localhost:3306/digital_twin_db";
 const adapter = new PrismaMariaDb(connectionString);
 const db = new PrismaClient({ adapter });
+const port = process.env.PORT || 3000;
 
 const app = new Elysia()
   .use(cors())
@@ -218,8 +219,6 @@ const app = new Elysia()
       return { error: "Internal Server Error" };
     }
   })
-  .listen(3000)
+  .listen(port)
 
-
-
-console.log(`🦊 Elysia login system is ready at http://localhost:3000`);
+  console.log(`🦊 Elysia is running at port ${port}`)
