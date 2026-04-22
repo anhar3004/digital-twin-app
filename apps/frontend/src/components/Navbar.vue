@@ -44,57 +44,58 @@
 </template>
 
 <script setup lang="ts">
-import { ref , onMounted} from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
+// 1. Impor state global yang sudah kita buat
+import { isLoggedIn, processLogout } from '@/composables/useAuth'; 
 
 const router = useRouter();
 
 // State reaktif untuk mendeteksi apakah menu mobile sedang terbuka atau tertutup
 const isMenuOpen = ref(false);
 
-// Fungsi untuk membuka/menutup menu saat tombol ditekan
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
 };
 
-// Fungsi untuk menutup menu otomatis saat link diklik (opsional tapi bagus untuk UX)
 const closeMenu = () => {
   isMenuOpen.value = false;
 };
 
-const userName = ref('');
-const isLoggedIn = ref(false);
-
-// Ambil nama user saat komponen dimuat
-onMounted(() => {
-  const token = localStorage.getItem('auth_token');
-  const userInfoStr = localStorage.getItem('user_info');
-
-  // Jika ada token dan data user, berarti dia sudah login
-  if (token && userInfoStr) {
-    isLoggedIn.value = true; // Munculkan tombol
-    const user = JSON.parse(userInfoStr);
-    userName.value = user.name;
-  } else {
-    isLoggedIn.value = false; // Sembunyikan tombol
+// 2. Gunakan 'computed' alih-alih 'onMounted'. 
+// Ini akan otomatis menghitung ulang dan bereaksi secara instan saat 'isLoggedIn' berubah!
+const userName = computed(() => {
+  if (isLoggedIn.value) {
+    const userInfoStr = localStorage.getItem('user_info');
+    if (userInfoStr) {
+      try {
+        const user = JSON.parse(userInfoStr);
+        return user.name;
+      } catch (e) {
+        return '';
+      }
+    }
   }
+  return '';
 });
 
 const handleLogout = () => {
-  // 1. Konfirmasi (Opsional, agar user tidak tidak sengaja kepencet)
+  // Konfirmasi (Opsional)
   const isConfirm = confirm('Apakah Anda yakin ingin keluar?');
   if (!isConfirm) return;
 
-  // 2. Hapus token dan data user dari brankas browser
-  localStorage.removeItem('auth_token');
-  localStorage.removeItem('user_info');
+  // 3. Jalankan fungsi logout dari global state, BUKAN hapus manual
+  // Ini akan langsung mengubah isLoggedIn menjadi false di seluruh aplikasi
+  processLogout();
 
   console.log('User berhasil logout');
 
-  // 3. Tendang kembali ke halaman login
+  // Tendang kembali ke halaman login & tutup menu
   router.push('/');
+  closeMenu();
 };
 </script>
+
 
 <style scoped>
 .bg-biru-tua {
