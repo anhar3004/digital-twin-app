@@ -50,15 +50,25 @@
 
                   <i v-else class="bi bi-box-seam fs-1 text-primary"></i>
                 </div>
+
                 <span :class="['badge', getStatusClass(product.warrantyStatus)]">
                   {{ product.warrantyStatus }}
                 </span>
               </div>
 
-              <h5 class="card-title h5 fw-bold mb-1">{{ product.name }}</h5>
-              <p class="text-muted small mb-3">S/N: <span class="fw-medium text-dark">{{ product.serialNumber }}</span>
-              </p>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                  <h5 class="card-title h5 fw-bold mb-1">{{ product.name }}</h5>
+                  <p class="text-muted small mb-0">
+                    S/N: <span class="fw-medium text-dark">{{ product.serialNumber }}</span>
+                  </p>
+                </div>
 
+                <div class="bg-white p-2 rounded border d-flex align-items-center justify-content-center shadow-sm"
+                  style="width: 80px; height: 80px;" title="Scan untuk detail unit">
+                  <qrcode-vue :value="getDetailUrl(product.serialNumber)" :size="60" />
+                </div>
+              </div>
               <hr class="my-3 opacity-25">
 
               <div class="d-flex justify-content-between small mb-2">
@@ -108,6 +118,7 @@ import { ref, computed, onMounted } from 'vue';
 import dayjs from 'dayjs';
 import { useRoute } from 'vue-router';
 import { getImageUrl } from '@/utils/image';
+import QrcodeVue from 'qrcode.vue'
 
 // State Management
 const route = useRoute()
@@ -128,11 +139,8 @@ interface Product {
   image: string;
 }
 
-// Fungsi untuk mengambil data dari Backend
-// 1. Pastikan inisialisasi ref menggunakan nama 'product' (tunggal) dan null
-// Gunakan Product[] untuk menandakan ini adalah sebuah Array berisi objek Product
-// Pastikan tidak ada tanda [] setelah interface di dalam ref
 const product = ref<Product[]>([]);
+
 useHead({
   // Gunakan kata kunci target (Katalog / Daftar)
   title: 'Katalog Unit & Showcase Industri | Holicindo',
@@ -178,6 +186,10 @@ useHead({
   ]
 })
 
+const getDetailUrl = (serialNumber: string) => {
+  return `${window.location.origin}/products/${serialNumber}`;
+};
+
 const getWarrantyText = (expiryDate: string | Date) => {
   if (!expiryDate) return 'Tidak Ada Data';
 
@@ -208,7 +220,7 @@ const getWarrantyText = (expiryDate: string | Date) => {
 
   return result.trim();
 };
-  
+
 const fetchProducts = async () => {
   loading.value = true;
   try {
